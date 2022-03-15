@@ -1,28 +1,13 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
 
 # Create your models here.
-from petstagram.main.validators import validate_only_letters, validate_file_max_size_in_mb, MinDateValidator, \
-    MaxDateValidator
+from petstagram.main.validators import validate_only_letters
 
-'''
-Profile
-The user must provide the following information in their profile:
- The first name - it should have at least 2 chars, max - 30 chars, and should consist only of letters.
- The last name - it should have at least 2 chars, max - 30 chars, and should consist only of letters.
- Profile picture - the user can link their picture using a URL.
-
-The user may provide the following information in their profile:
-
-© SoftUni – about.softuni.bg. Copyrighted document. Unauthorized copy, reproduction or use is not permitted.
-Follow us: Page 3 of 3
-
- Date of birth: day, month, and year of birth.
- Description - a user can write any description about themselves, no limit of words/chars.
- Email - a user can only write a valid email address.
- Gender - the user can choose one of the following: &quot;Male&quot;, &quot;Female&quot;, and &quot;Do not show&quot;.'''
+UserModel = get_user_model()
 
 
 class Profile(models.Model):
@@ -78,6 +63,12 @@ class Profile(models.Model):
         blank=True,
     )
 
+    user = models.OneToOneField(
+        UserModel,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
@@ -116,8 +107,8 @@ class Pet(models.Model):
     # One-to-one relations
 
     # One-to-many relations
-    user_profile = models.ForeignKey(
-        Profile,
+    user = models.ForeignKey(
+        UserModel,
         on_delete=models.CASCADE,
     )
 
@@ -134,7 +125,7 @@ class Pet(models.Model):
 
     # Meta
     class Meta:
-        unique_together = ('user_profile', 'name')
+        unique_together = ('user', 'name')
 
 
 class PetPhoto(models.Model):
@@ -144,7 +135,7 @@ class PetPhoto(models.Model):
         )
     )
     tagged_pets = models.ManyToManyField(
-    Pet,
+        Pet,
     # validate atleast one pet
     )
     description = models.TextField(

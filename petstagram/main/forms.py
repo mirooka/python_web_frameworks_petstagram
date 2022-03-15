@@ -97,12 +97,20 @@ class DeleteProfileForm(forms.ModelForm):
 
 
 class CreatePetForm(BootstrapFormMixin, forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
         self._init_bootstrap_form_controls()
 
+    def save(self, commit=True):
+        pet = super().save(commit=False)
+        pet.user = self.user
+        if commit:
+            pet.save()
+        return pet
+
     class Meta:
-        model = Pet()
+        model = Pet
         fields = ('name', 'type', 'date_of_birth')
         widgets = {
             'name': forms.TextInput(

@@ -13,6 +13,11 @@ class UserLoginView(auth_views.LoginView):
     template_name = 'accounts/login_page.html'
     success_url = reverse_lazy('dashboard')
 
+    def get_success_url(self):
+        if self.success_url:
+            return self.success_url
+        return super().get_success_url()
+
 
 class UserDetailsView:
     pass
