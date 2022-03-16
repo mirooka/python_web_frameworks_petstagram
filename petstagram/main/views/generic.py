@@ -1,8 +1,8 @@
 from django.views import generic as views
 from django.shortcuts import render, redirect
 
+from petstagram.common.view_mixins import RedirectToDashboard
 from petstagram.main.models import PetPhoto
-
 
 
 # def show_home(request):
@@ -12,19 +12,13 @@ from petstagram.main.models import PetPhoto
 #     return render(request, 'mian/home_page.html', context)
 
 
-class HomeView(views.TemplateView):
+class HomeView(RedirectToDashboard, views.TemplateView):
     template_name = 'mian/home_page.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['hide_additional_nav_items'] = True
         return context
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('dashboard')
-
-        return super().dispatch(request, *args, **kwargs)
 
 
 class DashboardView(views.ListView):
