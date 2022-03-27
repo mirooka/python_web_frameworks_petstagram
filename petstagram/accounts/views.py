@@ -1,6 +1,6 @@
 from django.views import generic as views
 from django.contrib.auth import views as auth_views
-from django.shortcuts import render, redirect
+
 
 # Create your views here.
 from django.urls import reverse_lazy
