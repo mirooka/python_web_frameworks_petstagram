@@ -171,14 +171,14 @@ LOGGING = {
     'handlers': {
         'console': {
             # DEBUG, WARNING, INFO, CRITICAL,
-            'level': 'LOGGING_LEVEL',
+            'level': LOGGING_LEVEL,
             'filters': [],
             'class': 'logging.StreamHandler',
         }
     },
     'loggers': {
         'django.db.backends': {
-            'level': 'LOGGING_LEVEL',
+            'level': LOGGING_LEVEL,
             'handlers': ['console'],
         }
     }
