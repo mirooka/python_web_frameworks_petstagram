@@ -15,28 +15,22 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-rj-qxwx608o#=_@53!6ees31cjm044k-z+74&t%@127%uc^a*&'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+APP_ENVIRONMENT = os.getenv('APP_ENVIRONMENT')
+print(APP_ENVIRONMENT)
+
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 '''
 False == True => False
 True == True => True
 '''
-print(DEBUG)
 
-ALLOWED_HOSTS = [
-    "petstagram-miro.herokuapp.com",
-    "localhost",
-    "127.0.0.1",
-]
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 # Application definition
 
@@ -47,7 +41,7 @@ DJANGO_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-               )
+)
 
 THIRD_PARTY_APPS = (
 
@@ -93,22 +87,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'petstagram.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd9it0qjnb3v4eo',
-        'USER': 'akhbeoixpwboru',
-        'PASSWORD': 'c7d593c081533465e6b87ef3d4cab155edc0971abed2b6f55d7de8c926dc4d55',
-        'HOST': 'ec2-63-32-248-14.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432',
+DATABASES = None
+if APP_ENVIRONMENT == 'Production':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'd9it0qjnb3v4eo',
+            'USER': 'akhbeoixpwboru',
+            'PASSWORD': 'c7d593c081533465e6b87ef3d4cab155edc0971abed2b6f55d7de8c926dc4d55',
+            'HOST': 'ec2-63-32-248-14.eu-west-1.compute.amazonaws.com',
+            'PORT': '5432',
+        }
     }
-}
-
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite3'
+        }
+    }
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -127,7 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
     # },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -138,7 +137,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
