@@ -1,7 +1,7 @@
 from django.contrib.auth import mixins as auth_mixin
 from django.urls import reverse_lazy
 from django.views import generic as views
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 
 from petstagram.main.models import PetPhoto
 
@@ -22,6 +22,16 @@ class PetPhotoDetailsView(auth_mixin.LoginRequiredMixin, views.DetailView):
     model = PetPhoto
     template_name = 'mian/photo_details.html'
     context_object_name = 'pet_photo'
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+
+        viewed_pet_photos = request.session.get('last_viewed_pet_photos_ids', [])
+
+        viewed_pet_photos.insert(0, self.kwargs['pk'])
+        request.session['last_viewed_pet_photos_ids'] = viewed_pet_photos[:4]
+
+        return response
 
     def get_queryset(self):
         return super()\
@@ -46,7 +56,7 @@ class CreatePetPhotoView(auth_mixin.LoginRequiredMixin, views.CreateView):
         return super().form_valid(form)
 
 
-def like_pet_photo(request, pk):
+def like_pet_photo(pk):
     # Like the pet with pk
     pet_photo = PetPhoto.objects.get(pk=pk)
     pet_photo.likes += 1
@@ -64,6 +74,3 @@ class EditPetPhotoView(views.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('pet photo details', kwargs={'pk': self.object.id})
-
-
-

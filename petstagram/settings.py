@@ -65,6 +65,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'petstagram.common.middlewares.count_user_clicks_middleware',
+    'petstagram.common.middlewares.last_viewed_pet_photos_middleware',
+
 ]
 
 ROOT_URLCONF = 'petstagram.urls'
